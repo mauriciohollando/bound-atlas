@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { EnterRitual } from "@/hub/EnterRitual";
+import { AtlasHub } from "@/hub/AtlasHub";
 import { useStoryFlags } from "@/flags/store";
 
-export default function HomePage() {
+export default function HubPage() {
   const entered = useStoryFlags((s) => s.entered);
   const router = useRouter();
   const [hydrated, setHydrated] = useState(false);
@@ -15,16 +15,16 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (hydrated && entered) router.replace("/hub");
+    if (hydrated && !entered) router.replace("/");
   }, [hydrated, entered, router]);
 
-  if (!hydrated) {
+  if (!hydrated || !entered) {
     return <main className="page-loading">Unfolding ink…</main>;
   }
 
-  if (entered) {
-    return <main className="page-loading">Opening atlas…</main>;
-  }
-
-  return <EnterRitual />;
+  return (
+    <main>
+      <AtlasHub />
+    </main>
+  );
 }

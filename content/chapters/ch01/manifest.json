@@ -1,0 +1,20 @@
+{
+  "id": "ch01",
+  "title": "Morning in Meridian",
+  "form": ["vertical_scroll", "seal_ritual"],
+  "flagsRequired": ["entered"],
+  "flagsSet": ["seal_warmth", "ch01_complete"],
+  "audio": {
+    "stem": "cinnamon_bells",
+    "sealAccent": "seal_warmth_hum"
+  },
+  "sections": [
+    { "id": "dawn", "kind": "establish" },
+    { "id": "courtyard", "kind": "scroll", "parallax": ["banners"] },
+    { "id": "nellie", "kind": "scroll" },
+    { "id": "mira", "kind": "scroll" },
+    { "id": "ceremony", "kind": "scroll" },
+    { "id": "seal", "kind": "island", "accent": "seal_warmth" },
+    { "id": "after", "kind": "scroll" }
+  ]
+}
