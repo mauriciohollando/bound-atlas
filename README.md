@@ -2,13 +2,16 @@
 
 Vertical-scroll graphic novel + atlas hub — **prototype vertical slice**.
 
+**Live:** https://bound-atlas.vercel.app  
+**Repo:** https://github.com/mauriciohollando/bound-atlas
+
 Flow: **ENTER → Hub → Chapter I (abbreviated) → Hub redraw**
 
 ## Stack
 
 - Next.js App Router + Tailwind
 - Zustand (`localStorage`) StoryFlags
-- CSS/SVG Meridian art + locked AI reference sheets in `public/art` / `style-bible`
+- CSS/SVG Meridian art + AI reference sheets in `public/art` / `style-bible`
 - Web Audio cinnamon-bell + seal warmth accents
 
 ## Develop
@@ -20,18 +23,15 @@ npm run dev
 
 ## Deploy (Vercel)
 
-From this directory:
+Separate Vercel project `fractal-loop/bound-atlas` (not the portfolio / parent aiquest app).
 
 ```bash
-npx vercel
 npx vercel --prod
 ```
 
-Create a **separate** Vercel project (not the portfolio).
-
 ## Content pipeline
 
-See `style-bible/` and `docs/` (copied from the Bound Maps interactive planning set).
+See `style-bible/` and `docs/` (Bound Maps interactive planning set).
 
 ## StoryFlags (slice)
 
