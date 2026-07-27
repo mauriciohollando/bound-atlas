@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { EnterRitual } from "@/hub/EnterRitual";
+import { IntroExperience } from "@/intro/IntroExperience";
 import { useStoryFlags } from "@/flags/store";
 
 export default function HomePage() {
@@ -15,7 +15,8 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (hydrated && entered) router.replace("/hub");
+    if (!hydrated || !entered) return;
+    router.replace("/hub");
   }, [hydrated, entered, router]);
 
   if (!hydrated) {
@@ -26,5 +27,5 @@ export default function HomePage() {
     return <main className="page-loading">Opening atlas…</main>;
   }
 
-  return <EnterRitual />;
+  return <IntroExperience />;
 }

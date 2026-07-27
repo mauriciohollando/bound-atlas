@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { CompactSeal } from "@/art/PlaceArt";
 import { useStoryFlags } from "@/flags/store";
 
@@ -54,6 +55,7 @@ export function AtlasHub() {
   const newAtlas = useStoryFlags((s) => s.newAtlas);
   const audioMuted = useStoryFlags((s) => s.audioMuted);
   const setAudioMuted = useStoryFlags((s) => s.setAudioMuted);
+  const router = useRouter();
   const [focus, setFocus] = useState<PinId | null>("meridian");
   const [inspector, setInspector] = useState<"live" | "retired">("live");
 
@@ -172,7 +174,14 @@ export function AtlasHub() {
             >
               Dev flags {devUnlockAll ? "on" : "off"}
             </button>
-            <button type="button" className="tool-btn danger" onClick={newAtlas}>
+            <button
+              type="button"
+              className="tool-btn danger"
+              onClick={() => {
+                newAtlas();
+                router.replace("/");
+              }}
+            >
               New atlas
             </button>
           </div>

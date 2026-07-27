@@ -49,7 +49,137 @@ a {
   letter-spacing: 0.04em;
 }
 
-/* ——— ENTER ——— */
+/* ——— CINEMATIC INTRO ——— */
+.intro-root {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  overflow: hidden;
+  z-index: 50;
+}
+
+.intro-black {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(1.5rem, 6vw, 4.5rem);
+  background: #000;
+}
+
+.intro-hook {
+  margin: 0;
+  max-width: 18em;
+  font-family: var(--font-display), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.35rem, 3.2vw, 2.15rem);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: rgba(236, 230, 220, 0.88);
+}
+
+.intro-hook-over {
+  position: absolute;
+  left: clamp(1.25rem, 4vw, 3rem);
+  top: clamp(1.25rem, 4vw, 3rem);
+  z-index: 2;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.65);
+  max-width: min(22em, 70vw);
+}
+
+.intro-stage {
+  position: absolute;
+  inset: 0;
+}
+
+.intro-map-ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.intro-draw-meta {
+  pointer-events: auto;
+  padding: 1.25rem clamp(1rem, 3vw, 2.5rem) 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.72), transparent);
+}
+
+.intro-ink-meter {
+  width: min(280px, 70vw);
+  height: 3px;
+  background: rgba(232, 217, 192, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.intro-ink-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3a2010, var(--m-gold));
+  transition: width 0.2s ease;
+}
+
+.intro-enter {
+  border: 1px solid rgba(201, 162, 39, 0.65);
+  background: rgba(15, 28, 46, 0.55);
+  color: var(--m-cream);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.22em;
+  padding: 0.75rem 1.4rem;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.intro-enter:hover:not(:disabled) {
+  background: rgba(201, 162, 39, 0.22);
+  box-shadow: 0 0 28px rgba(201, 162, 39, 0.2);
+}
+
+.intro-enter:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.intro-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(232, 217, 192, 0.65);
+}
+
+.intro-skip {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 20;
+  border: none;
+  background: transparent;
+  color: rgba(232, 217, 192, 0.45);
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+
+.intro-skip:hover {
+  color: rgba(232, 217, 192, 0.85);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-hook {
+    transition: none;
+  }
+}
+
+/* ——— ENTER (legacy, unused by new intro) ——— */
 .enter-screen {
   min-height: 100vh;
   display: flex;
