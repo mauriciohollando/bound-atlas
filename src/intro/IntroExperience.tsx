@@ -59,6 +59,9 @@ export function IntroExperience() {
     router.replace("/hub");
   }, [enter, router]);
 
+  // Always land on cinematic for first paint of this session key;
+  // Skip jumps to ink map, not the old hub.
+
   const skipToDraw = () => setPhase("draw");
 
   const showAtmosphere = phase === "meridian" || phase === "seal";

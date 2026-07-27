@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CompactSeal } from "@/art/PlaceArt";
+import { AtmosphereStage } from "@/intro/AtmosphereStage";
+import { InkMapStage } from "@/intro/InkMapStage";
 import { useStoryFlags } from "@/flags/store";
 
 type PinId = "meridian" | "saltmere" | "span";
@@ -13,6 +15,7 @@ const PINS: Array<{
   name: string;
   sensory: string;
   sensoryAfter: string;
+  /** Percent positions over the fantasy atlas plate. */
   x: number;
   y: number;
   unlock: "start" | "ch01" | "later";
@@ -22,7 +25,7 @@ const PINS: Array<{
     name: "Meridian — Scholar Quarter",
     sensory: "Wet stone. Cinnamon on the wind.",
     sensoryAfter: "The seal’s warmth still lives in your fingertips.",
-    x: 42,
+    x: 38,
     y: 48,
     unlock: "start",
   },
@@ -31,8 +34,8 @@ const PINS: Array<{
     name: "Saltmere",
     sensory: "Tar and citrus — sealed until the road opens.",
     sensoryAfter: "Tar and citrus — sealed until the road opens.",
-    x: 68,
-    y: 62,
+    x: 28,
+    y: 72,
     unlock: "later",
   },
   {
@@ -40,8 +43,8 @@ const PINS: Array<{
     name: "Span of First Ink",
     sensory: "Sealed light over dark water — not yet.",
     sensoryAfter: "Sealed light over dark water — not yet.",
-    x: 78,
-    y: 38,
+    x: 52,
+    y: 46,
     unlock: "later",
   },
 ];
@@ -58,6 +61,8 @@ export function AtlasHub() {
   const router = useRouter();
   const [focus, setFocus] = useState<PinId | null>("meridian");
   const [inspector, setInspector] = useState<"live" | "retired">("live");
+  const [drawMode, setDrawMode] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(true);
 
   const focused = useMemo(
     () => PINS.find((p) => p.id === focus) ?? PINS[0],
@@ -76,44 +81,82 @@ export function AtlasHub() {
   }
 
   return (
-    <div className="hub">
-      <header className="hub-header">
-        <h1 className="hub-title">The Bound Atlas</h1>
-        <p className="hub-sub">
-          {ch01Complete
-            ? "Your personal atlas has begun to redraw."
-            : "Reading is the sanctioned map. Touch a pin to walk."}
-        </p>
+    <div className="hub-immersive">
+      <div className="hub-map-layer" aria-hidden={!drawMode}>
+        {drawMode ? (
+          <InkMapStage mapSrc="/art/intro/bound-atlas-map.webp" reveal={1} />
+        ) : (
+          <AtmosphereStage
+            src="/art/intro/bound-atlas-map.webp"
+            fade={1}
+            inkAmt={0.65}
+          />
+        )}
+      </div>
+
+      <div className="hub-vignette" aria-hidden />
+
+      <header className="hub-immersive-header">
+        <div>
+          <p className="hub-kicker">The Bound Atlas</p>
+          <h1 className="hub-immersive-title">
+            {ch01Complete
+              ? "Your personal atlas has begun to redraw."
+              : "Reading is the sanctioned map."}
+          </h1>
+        </div>
+        <div className="hub-header-actions">
+          <button
+            type="button"
+            className={`tool-btn${drawMode ? " on" : ""}`}
+            onClick={() => setDrawMode((v) => !v)}
+          >
+            {drawMode ? "Ink brush on" : "Ink brush off"}
+          </button>
+          <button
+            type="button"
+            className="tool-btn"
+            onClick={() => setPanelOpen((v) => !v)}
+          >
+            {panelOpen ? "Hide desk" : "Show desk"}
+          </button>
+          <button
+            type="button"
+            className="tool-btn danger"
+            onClick={() => {
+              newAtlas();
+              router.replace("/");
+            }}
+          >
+            Replay intro
+          </button>
+        </div>
       </header>
 
-      <div className="hub-stage">
-        <div className="atlas-map" role="img" aria-label="Bound atlas of Meridian">
-          <div className="atlas-parchment" />
-          <div className="atlas-continent meridian-land" />
-          <div className="atlas-continent east-haze" />
-          {ch01Complete && <div className="atlas-ink-edge" />}
-          {devUnlockAll && <div className="soft-middle-vein" aria-hidden />}
+      <div className="hub-pin-layer">
+        {PINS.map((pin) => {
+          const open = isUnlocked(pin);
+          return (
+            <button
+              key={pin.id}
+              type="button"
+              className={`atlas-pin immersive${open ? " is-open" : " is-sealed"}${focus === pin.id ? " is-focus" : ""}`}
+              style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
+              onClick={() => {
+                setFocus(pin.id);
+                setPanelOpen(true);
+              }}
+              aria-label={`${pin.name}${open ? "" : " (sealed)"}`}
+            >
+              <span className="pin-sun" />
+              <span className="pin-label">{pin.name.split("—")[0].trim()}</span>
+            </button>
+          );
+        })}
+      </div>
 
-          {PINS.map((pin) => {
-            const open = isUnlocked(pin);
-            return (
-              <button
-                key={pin.id}
-                type="button"
-                className={`atlas-pin${open ? " is-open" : " is-sealed"}${focus === pin.id ? " is-focus" : ""}`}
-                style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
-                onClick={() => setFocus(pin.id)}
-                onFocus={() => setFocus(pin.id)}
-                aria-label={`${pin.name}${open ? "" : " (sealed)"}`}
-              >
-                <span className="pin-sun" />
-                <span className="pin-label">{pin.name.split("—")[0].trim()}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        <aside className="hub-side">
+      {panelOpen && (
+        <aside className="hub-float-panel">
           <div className="hub-card">
             <h2>{focused.name}</h2>
             <p className="sensory">
@@ -133,14 +176,13 @@ export function AtlasHub() {
 
           <div className="hub-card seal-desk">
             <h2>Seal desk</h2>
-            <p className="sensory">Live Compact sun vs retired Ledger gold.</p>
             <div className="seal-row">
               <button
                 type="button"
                 className={inspector === "live" ? "seal-pick on" : "seal-pick"}
                 onClick={() => setInspector("live")}
               >
-                <CompactSeal variant="live" size={72} />
+                <CompactSeal variant="live" size={64} />
                 <span>Live</span>
               </button>
               <button
@@ -148,7 +190,7 @@ export function AtlasHub() {
                 className={inspector === "retired" ? "seal-pick on" : "seal-pick"}
                 onClick={() => setInspector("retired")}
               >
-                <CompactSeal variant="retired" size={72} />
+                <CompactSeal variant="retired" size={64} />
                 <span>Retired</span>
               </button>
             </div>
@@ -174,23 +216,18 @@ export function AtlasHub() {
             >
               Dev flags {devUnlockAll ? "on" : "off"}
             </button>
-            <button
-              type="button"
-              className="tool-btn danger"
-              onClick={() => {
-                newAtlas();
-                router.replace("/");
-              }}
-            >
-              New atlas
-            </button>
           </div>
 
           {sealWarmth && !ch01Complete && (
             <p className="hub-hint">Continue the scroll — the seal still hums.</p>
           )}
+          {drawMode && (
+            <p className="hub-hint">
+              Drag across the parchment — iron-gall ink with brush fibers.
+            </p>
+          )}
         </aside>
-      </div>
+      )}
     </div>
   );
 }

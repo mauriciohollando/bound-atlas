@@ -53,6 +53,6 @@ export const useStoryFlags = create<StoryFlags & FlagActions>()(
       setDevUnlockAll: (devUnlockAll) => set({ devUnlockAll }),
       newAtlas: () => set({ ...initialFlags }),
     }),
-    { name: "bound-atlas-flags-v1" },
+    { name: "bound-atlas-flags-v2" },
   ),
 );
